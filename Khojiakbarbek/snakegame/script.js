@@ -19,7 +19,7 @@ let food_coords = {
 
 let snakeX = 0;
 let snakeY = 0;
-let dir = "right";
+let dir = "wait";
  
 
     
@@ -33,7 +33,7 @@ snake[0] = {
 //snake.unshift(newHead);
 //snake.pop();
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keypress", (event) =>{
     if(event.key == "w" && dir != "down") {
         dir = "up";
     }
