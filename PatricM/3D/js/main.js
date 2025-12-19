@@ -26,6 +26,7 @@ function player(x, y, z, rx, ry, vx, vy, vz) {
 
 var pawn = new player(0, 0, 0, 0, 0, 7, 7, 7);
 var myBullets = [];
+var myBulletsData = [];
 var myBulletNumber = 0;
 
 let myRoom = [
@@ -129,10 +130,17 @@ function update() {
     document.onclick = function () {
         if (lock) {
             myBullets.push(drawMyBullet(myBulletNumber));
+            myBulletsData.push(new player(pawn.x, pawn.y, pawn.z, pawn.rx, pawn.ry, 0, 0, 0));
+            console.log(myBullets);
+            console.log(myBulletsData);
+            console.log(pawn);
             myBulletNumber++;
         }
-
     }
+
+    // for (let i = 0; i < myBullets.length; i++) {
+    //     myBullets[i].style.transform = `translateZ(600px) rotateX(${-myBulletsData[i].rx}deg) rotateY(${myBulletsData[i].ry}deg) translate3d(${-myBulletsData[i].x}px, ${-myBulletsData[i].y}px, ${-myBulletsData[i].z}px)`;
+    // }
 
     world.style.transform = `translateZ(600px) rotateX(${-pawn.rx}deg) rotateY(${pawn.ry}deg) translate3d(${-pawn.x}px, ${-pawn.y}px, ${-pawn.z}px)`;
 }
@@ -237,10 +245,11 @@ function drawMyBullet(num) {
     myBullet.id = `bullet_${num}`;
     myBullet.style.display = "block";
     myBullet.style.position = "absolute";
-    myBullet.style.width = `20px`;
-    myBullet.style.height = `20px`;
+    myBullet.style.width = `50px`;
+    myBullet.style.height = `50px`;
     myBullet.style.borderRadius = `50%`;
     myBullet.style.backgroundColor = `red`;
+    myBullet.style.transform = `translate3d(${600+pawn.x-25}px, ${400+pawn.y-25}px, ${pawn.z}px) rotateX(${pawn.rx}deg) rotateY(${-pawn.ry}deg)`
     world.appendChild(myBullet);
     return myBullet;
 }
