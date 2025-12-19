@@ -28,7 +28,12 @@ var pawn = new player(0, 0, 0, 0, 0, 7, 7, 7);
 
 let myRoom = [
     [0, 100, 0, 90, 0, 0, 2000, 2000, "brown", 1, "url('textures/floor_01.jpg')"],
+    [0, 70, 0, 90, 0, 0, 200, 200, "yellow", 1, "url('textures/sandy_wall.jpg')"],
     [0, -100, -1000, 0, 0, 0, 2000, 400, "brown", 1, "url('textures/sandy_wall.jpg')"],
+    [0, 87.5, -100, 0, 0, 0, 200, 35, "yellow", 1, "url('textures/sandy_wall.jpg')"],
+    [0, 87.5, 100, 0, 0, 0, 200, 35, "yellow", 1,"url('textures/sandy_wall.jpg')"],
+    [100, 87.5, 0, 0, 90, 0, 200, 35, "yellow", 1, "url('textures/sandy_wall.jpg')"],
+    [-100, 87.5, 0, 0, 90, 0, 200, 35, "yellow", 1, "url('textures/sandy_wall.jpg')"],
 ];
 
 drawMyWorld(myRoom, "wall")
@@ -142,6 +147,7 @@ function drawMyWorld(squares, name) {
 }
 
 function collision(mapObj, leadObj) {
+    onGround = false;
     for (let i = 0; i < mapObj.length; i++) {
         //spēlētāja koordinātes katra taiststūra koordināšu sistēmā
         let x0 = (leadObj.x - mapObj[i][0]);
