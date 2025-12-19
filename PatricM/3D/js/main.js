@@ -25,13 +25,15 @@ function player(x, y, z, rx, ry, vx, vy, vz) {
 }
 
 var pawn = new player(0, 0, 0, 0, 0, 7, 7, 7);
+var myBullets = [];
+var myBulletNumber = 0;
 
 let myRoom = [
     [0, 100, 0, 90, 0, 0, 2000, 2000, "brown", 1, "url('textures/floor_01.jpg')"],
     [0, 70, 0, 90, 0, 0, 200, 200, "yellow", 1, "url('textures/sandy_wall.jpg')"],
     [0, -100, -1000, 0, 0, 0, 2000, 400, "brown", 1, "url('textures/sandy_wall.jpg')"],
     [0, 87.5, -100, 0, 0, 0, 200, 35, "yellow", 1, "url('textures/sandy_wall.jpg')"],
-    [0, 87.5, 100, 0, 0, 0, 200, 35, "yellow", 1,"url('textures/sandy_wall.jpg')"],
+    [0, 87.5, 100, 0, 0, 0, 200, 35, "yellow", 1, "url('textures/sandy_wall.jpg')"],
     [100, 87.5, 0, 0, 90, 0, 200, 35, "yellow", 1, "url('textures/sandy_wall.jpg')"],
     [-100, 87.5, 0, 0, 90, 0, 200, 35, "yellow", 1, "url('textures/sandy_wall.jpg')"],
 ];
@@ -121,6 +123,15 @@ function update() {
             pawn.rx = -57;
         }
         pawn.ry += dry;
+    }
+
+    //shooting option with the mouse
+    document.onclick = function () {
+        if (lock) {
+            myBullets.push(drawMyBullet(myBulletNumber));
+            myBulletNumber++;
+        }
+
     }
 
     world.style.transform = `translateZ(600px) rotateX(${-pawn.rx}deg) rotateY(${pawn.ry}deg) translate3d(${-pawn.x}px, ${-pawn.y}px, ${-pawn.z}px)`;
@@ -218,3 +229,20 @@ function coorReTransform(x3, y3, z3, rxc, ryc, rzc) {
 
     return [x0, y0, z0];
 }
+
+//functions related to shooting - START
+
+function drawMyBullet(num) {
+    let myBullet = document.createElement("div");
+    myBullet.id = `bullet_${num}`;
+    myBullet.style.display = "block";
+    myBullet.style.position = "absolute";
+    myBullet.style.width = `20px`;
+    myBullet.style.height = `20px`;
+    myBullet.style.borderRadius = `50%`;
+    myBullet.style.backgroundColor = `red`;
+    world.appendChild(myBullet);
+    return myBullet;
+}
+
+//functions related to shooting - END
