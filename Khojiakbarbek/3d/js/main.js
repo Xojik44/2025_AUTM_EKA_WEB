@@ -10,7 +10,25 @@ document.addEventListener("pointerlockchange", (event) => {
 container.onclick = function () {
     if (!lock) container.requestPointerLock();
 }
-//
+
+document.onclick = function () {
+    if (lock) {
+        drawMyBullet(myBulletNumber);
+        myBulletNumber++;
+    }
+}
+
+let crosshair = document.createElement("div");
+crosshair.style.position = "absolute";
+crosshair.style.top = "50%";
+crosshair.style.left = "50%";
+crosshair.style.width = "20px";
+crosshair.style.height = "20px";
+crosshair.style.marginLeft = "-10px";
+crosshair.style.marginTop = "-10px";
+crosshair.style.border = "2px solid black";
+crosshair.style.borderRadius = "50%";
+container.appendChild(crosshair);
 
 function player(x, y, z, rx, ry, vx, vy, vz) {
     this.x = x;
@@ -25,6 +43,8 @@ function player(x, y, z, rx, ry, vx, vy, vz) {
 }
 
 var pawn = new player(0, 0, 0, 0, 0, 7, 7, 7);
+var myBullets = [];
+var myBulletNumber = 0;
 
 let myRoom = [
     [0, 100, 0, 90, 0, 0, 2000, 2000, "brown", 1, "url('textures/pool.jpg')"],
@@ -91,11 +111,13 @@ function update() {
     if (onGround) {
         dy = 0;
         if (pressUp) {
-            // console.log("jump");
+            
             dy = -pressUp;
             onGround = false;
         }
     }
+    
+    updateBullets();
 
 
 
@@ -213,4 +235,48 @@ function coorReTransform(x3, y3, z3, rxc, ryc, rzc) {
     let z0 = y1 * Math.sin(rxc * DEG) + z1 * Math.cos(rxc * DEG);
 
     return [x0, y0, z0];
+}
+
+
+
+
+
+function drawMyBullet(num) {
+    let myBullet = document.createElement("div");
+    myBullet.id = `bullet_${num}`;
+    myBullet.style.display = "block";
+    myBullet.style.position = "absolute";
+    myBullet.style.width = `10px`;
+    myBullet.style.height = `10px`;
+    myBullet.style.borderRadius = `50%`;
+    myBullet.style.backgroundColor = `red`;
+    world.appendChild(myBullet);
+
+    // объект пули с координатами и скоростью
+    let bulletObj = {
+        el: myBullet,
+        x: pawn.x,
+        y: pawn.y,
+        z: pawn.z,
+        speed: 5, // скорость пули
+        dx: Math.sin(pawn.ry * DEG) * Math.cos(pawn.rx * DEG),
+        dy: -Math.sin(pawn.rx * DEG),
+        dz: Math.cos(pawn.ry * DEG) * Math.cos(pawn.rx * DEG),
+    };
+
+    myBullets.push(bulletObj);
+    return bulletObj;
+}
+
+function updateBullets() {
+    for (let i = myBullets.length - 1; i >= 0; i--) {
+        let b = myBullets[i];
+        b.x += b.dx * b.speed;
+        b.y += b.dy * b.speed;
+        b.z += b.dz * b.speed;
+
+        // обновляем DOM
+        b.el.style.transform = `translate3d(${600 + b.x}px, ${400 + b.y}px, ${b.z}px)`;
+
+    }
 }
