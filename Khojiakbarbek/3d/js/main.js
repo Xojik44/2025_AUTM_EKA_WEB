@@ -11,6 +11,9 @@ container.onclick = function () {
     if (!lock) container.requestPointerLock();
 };
 
+let score = 0;
+let scoreEl;
+
 // Crosshair
 let crosshair = document.createElement("div");
 crosshair.style.position = "absolute";
@@ -23,6 +26,17 @@ crosshair.style.marginTop = "-10px";
 crosshair.style.border = "2px solid black";
 crosshair.style.borderRadius = "50%";
 container.appendChild(crosshair);
+
+scoreEl = document.createElement("div");
+scoreEl.style.position = "absolute";
+scoreEl.style.top = "20px";
+scoreEl.style.left = "20px";
+scoreEl.style.fontSize = "24px";
+scoreEl.style.fontFamily = "Arial";
+scoreEl.style.color = "black";
+scoreEl.style.zIndex = "1000";
+scoreEl.innerText = "Score: 0";
+container.appendChild(scoreEl);
 
 // Player
 function player(x, y, z, rx, ry, vx, vy, vz) {
@@ -43,13 +57,31 @@ var myBulletNumber = 0;
 
 // World
 let myRoom = [
-    [0, 100, 0, 90, 0, 0, 2000, 2000, "brown", 1, "url('textures/pool.jpg')"],
-    [0, -300, 0, 90, 0, 0, 2000, 2000, "lightgrey", 1, "url('textures/potalok.jpg')"],
-    [1000, 100, 0, 0, 90, 0, 2000, 1000, "lightgreen", 1, "url('textures/wall.jpg')"],
-    [-1000, 100, 0, 0, 90, 0, 2000, 1000, "lightcoral", 1, "url('textures/wall.jpg')"],
-    [0, 100, 1000, 0, 0, 0, 2000, 1000, "lightyellow", 1, "url('textures/wall.jpg')"],
-    [0, 100, -1000, 0, 0, 0, 2000, 1000, "lightblue", 1, "url('textures/wall.jpg')"],
-    [0, 90, 0, 0, 90, 0, 2000, 50, "grey", 1]
+    [0, 100, 0, 90, 0, 0, 2000, 2000, "brown", 1, "url('textures/lava.jpg')"],
+    [0, -300, 0, 90, 0, 0, 2000, 2000, "red", 1],
+    [1000, 100, 0, 0, 90, 0, 2000, 1000, "lightgreen", 1, "url('textures/ad.jpg')"],
+    [-1000, 100, 0, 0, 90, 0, 2000, 1000, "lightcoral", 1, "url('textures/ad.jpg')"],
+    [0, 100, 1000, 0, 0, 0, 2000, 1000, "lightyellow", 1, "url('textures/ad.jpg')"],
+    [0, 100, -1000, 0, 0, 0, 2000, 1000, "lightblue", 1, "url('textures/ad.jpg')"],
+    [ -950, 40, -300, 90, 0, 0, 80, 80, "darkgrey", 1, "url('textures/blok.jpg')"],
+    [ -950, 0, 350, 90, 0, 0, 80, 80, "darkred", 1, "url('textures/blok.jpg')"],
+    [ -950, -60, 0, 90, 0, 0, 80, 80, "darkred", 1, "url('textures/blok.jpg')"],
+    [ -950, 0, 650, 90, 0, 0, 80, 80, "darkred", 1, "url('textures/blok.jpg')"],
+    [ -950, -60, 950, 90, 0, 0, 80, 80, "green", 1, "url('textures/blok.jpg')"],
+    [ -450, -80, 950, 90, 0, 0, 80, 80, "yellow", 1, "url('textures/blok.jpg')"],
+    [  0, -80, 950, 90, 0, 0, 80, 80, "yellow", 1, "url('textures/blok.jpg')"],
+    [  450, -20, 950, 90, 0, 0, 80, 80, "yellow", 1, "url('textures/blok.jpg')"],
+    [  950, -20, 950, 90, 0, 0, 80, 80, "yellow", 1, "url('textures/blok.jpg')"],
+    [  950, -60, 350, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  950, -80, -150, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  950, -80, -650, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  950, -40, -950, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  350, -40, -950, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  -150, -80, -950, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  -650, -80, -950, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  -950, -40, -950, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  -950, -40, -950, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
+    [  -950, -40, -600, 90, 0, 0, 80, 80, "skyblue", 1, "url('textures/blok.jpg')"],
 ];
 
 drawMyWorld(myRoom, "wall");
@@ -250,24 +282,22 @@ function updateBullets() {
     }
 }
 
-// Random position inside floor
 function randomPosInRoom() {
-    const floor = myRoom.find(obj => obj[8] === "grey"); // Пол
-    const targetWidth = 50;  // ширина зомби
-    const targetDepth = 50;  // глубина зомби
-    const halfWidth = floor[6]/2 - targetWidth/2;
-    const halfDepth = floor[7]/2 - targetDepth/2;
+    const floor = myRoom.find(obj => obj[8] === "brown");
+
+    const halfW = floor[6] / 2 - 30;
+    const halfD = floor[7] / 2 - 30;
 
     return {
-        x: Math.random() * 2 * halfWidth - halfWidth,
-        z: Math.random() * 2 * halfDepth - halfDepth
+        x: floor[0] + Math.random() * 2 * halfW - halfW,
+        z: floor[2] + Math.random() * 2 * halfD - halfD
     };
 }
 
 // Spawn zombie
 function spawnZombie(pos) {
     const zombie = [
-        pos.x, 50, pos.z, 0, 0, 0, 50, 100, null, 1, "url('textures/zombie.png')", true
+        pos.x, 50, pos.z, 0, 0, 0, 50, 100, null, 1, "url('textures/demon.png')", true
     ];
 
     myRoom.push(zombie);
@@ -299,6 +329,8 @@ function bulletHitCheck(bullet) {
         if (Math.abs(dx) < obj[6]/2 && Math.abs(dy) < obj[7]/2 && Math.abs(dz) < 50) {
             obj.el.remove();
             myRoom.splice(i, 1);
+            score++;
+            scoreEl.innerText = "Score: " + score;
             spawnZombie(randomPosInRoom());
             return true;
         }
